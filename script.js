@@ -53,8 +53,8 @@ let populateTasks = (id) => {
 }
 
 /* function setListID: to populate all the tasks in the list */
-/* When any list is clicked the event is fired and callback the function setListID, this will get the ID of the list item clciked
- and populates all the tasks from that list*/
+/* When any list is clicked the event is fired and callback the function setListID, this will get the ID of the list item clicked
+ and populates all the tasks from that list and sets the current active list ID*/
 let setListID = (objDOM) => {
     let obj = objDOM.target.parentNode;
     document.getElementsByClassName('listOfTodoTasksDiv')[0].style.display = 'block';
@@ -120,16 +120,16 @@ ToDoList.prototype.createNewListItem = () => {
         alert('Enter List Name');
     } else {
         let listID = (Math.random() * 1000).toFixed(0);
-
-        if (toDoList.find(i => i.listID == listID)) {
+        while(toDoList.find(i => i.listID == listID)) {
             listID = (Math.random() * 1000).toFixed(0);
-        } else {
-            listObj = {
-                listID: listID,
-                listName: listName,
-                listTasks: []
-            }
         }
+
+        listObj = {
+            listID: listID,
+            listName: listName,
+            listTasks: []
+        }
+
         toDoList.push(listObj);
         let copyOfToDoList = [...toDoList];
         let newListItem = copyOfToDoList.pop();
@@ -147,15 +147,16 @@ ToDoList.prototype.createNewTask = () => {
         let taskID = (Math.random() * 1000).toFixed(0);
         let listObj = toDoList.find(listObjItem => listObjItem.listID == activeListID);
 
-        if(listObj.listTasks.find(i => i.taskID == taskID)) {
+        while(listObj.listTasks.find(i => i.taskID == taskID)) {
             taskID = (Math.random() * 1000).toFixed(0);
-        } else {
-            taskObj = {
-                taskID: taskID,
-                taskName: taskName,
-                taskStatus: 'pending'
-            }
         }
+
+        taskObj = {
+            taskID: taskID,
+            taskName: taskName,
+            taskStatus: 'pending'
+        }
+
         listObj.listTasks.push(taskObj);
         document.getElementById('task').innerHTML = '';
         populateTasks(activeListID);
@@ -185,10 +186,7 @@ ToDoList.prototype.removeList = (e) => {
     if(e.target.parentNode.id == activeListID || toDoList.length == 0) {
         document.getElementsByClassName('listOfTodoTasksDiv')[0].style.display = 'none';
         document.getElementsByClassName('taskListDisplay')[0].style.display = 'none';
-    } else {
-        document.getElementsByClassName('listOfTodoTasksDiv')[0].style.display = 'block';
-        document.getElementsByClassName('taskListDisplay')[0].style.display = 'block';
-    }
+    } 
 }
 
 ToDoList.prototype.removeTask = (e) => {
